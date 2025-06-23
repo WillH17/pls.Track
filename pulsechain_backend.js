@@ -13,6 +13,7 @@ const PORT = 3000;
 const padAddress = (addr) => '0x' + addr.toLowerCase().replace('0x', '').padStart(64, '0');
 
 app.get('/portfolio/:wallet', async (req, res) => {
+  console.log("📥 Incoming request for /portfolio:", req.params.wallet);
   const wallet = req.params.wallet.toLowerCase();
   const apiBase = 'https://api.scan.pulsechain.com/api';
   console.log("🚀 Request received for wallet:", wallet);
