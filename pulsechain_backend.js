@@ -2,6 +2,11 @@
 // Purpose: Return all PRC-20 tokens for a given PulseChain wallet
 // Uses BlockScout API to scan transfer logs and fetch token balances
 
+app.use((req, res, next) => {
+  console.log(`🌐 ${req.method} ${req.url}`);
+  next();
+});
+
 console.log("✅ THIS IS THE CORRECT VERSION OF THE BACKEND");
 
 const express = require('express');
