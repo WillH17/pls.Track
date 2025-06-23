@@ -12,10 +12,11 @@ app.use((req, res, next) => {
 });
 
 // Add the test route
-app.get('/xyzcheck', (req, res) => {
-  console.log("✅ /xyzcheck was hit");
-  res.send("you are running the correct backend");
+app.get('/ping', (req, res) => {
+  console.log("✅ /ping was hit");
+  res.send("pong");
 });
+
 
 
 app.listen(PORT, '0.0.0.0', () => {
