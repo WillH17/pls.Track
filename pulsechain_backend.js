@@ -9,6 +9,9 @@ const axios = require('axios');
 const app = express();
 const PORT = 3000;
 
+throw new Error("🚨 You are running THIS file");
+
+
 app.use((req, res, next) => {
   console.log(`🌐 ${req.method} ${req.url}`);
   next();
