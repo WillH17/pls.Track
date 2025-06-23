@@ -30,18 +30,18 @@ app.get('/portfolio/:wallet', async (req, res) => {
       }
     });
 
+    console.log('Logs API response:', logsResponse.data); // <-- This logs the raw response for debugging
+
     const logs = logsResponse.data.result;
-    
 
     if (!Array.isArray(logs)) {
-      return res.status(500).json({
-        error: "Failed to fetch portfolio",
-        details: "Transfer logs are missing or malformed",
+      return res.status(404).json({
+        error: "No token transfers found for this wallet",
+        details: logsResponse.data.message || "No logs returned"
       });
     }
 
     const tokenContracts = [...new Set(logs.map(log => log.address.toLowerCase()))];
-
 
     const tokens = await Promise.all(tokenContracts.map(async (contract) => {
       try {
@@ -65,6 +65,7 @@ app.get('/portfolio/:wallet', async (req, res) => {
 
         const info = infoResp.data.result;
         const balance = balanceResp.data.result;
+
         return {
           name: info.name,
           symbol: info.symbol,
