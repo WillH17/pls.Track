@@ -45,6 +45,8 @@ app.get('/portfolio/:wallet', async (req, res) => {
 
     const tokenContracts = [...new Set(logs.map(log => log.address.toLowerCase()))];
 
+    console.log("Token contracts to process:", tokenContracts);
+
     const tokens = await Promise.all(tokenContracts.map(async (contract) => {
       try {
         const [infoResp, balanceResp, priceResp] = await Promise.all([
