@@ -26,9 +26,11 @@ app.get('/portfolio/:wallet', async (req, res) => {
         fromBlock: '0',
         toBlock: 'latest',
         topic0: transferTopic,
-        topic1: fromTopic
+        topic1: fromTopic,
+        topic0_1_opr: 'and'
       }
     });
+
 
     console.log('Logs API response:', logsResponse.data); // <-- This logs the raw response for debugging
 
