@@ -13,6 +13,7 @@ const padAddress = (addr) => '0x' + addr.toLowerCase().replace('0x', '').padStar
 app.get('/portfolio/:wallet', async (req, res) => {
   const wallet = req.params.wallet.toLowerCase();
   const apiBase = 'https://api.scan.pulsechain.com/api';
+  console.log("🚀 Request received for wallet:", wallet);
 
   try {
     // Step 1: Fetch Transfer logs
