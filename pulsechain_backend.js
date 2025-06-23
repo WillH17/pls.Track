@@ -31,7 +31,17 @@ app.get('/portfolio/:wallet', async (req, res) => {
     });
 
     const logs = logsResponse.data.result;
+    
+
+    if (!Array.isArray(logs)) {
+      return res.status(500).json({
+        error: "Failed to fetch portfolio",
+        details: "Transfer logs are missing or malformed",
+      });
+    }
+
     const tokenContracts = [...new Set(logs.map(log => log.address.toLowerCase()))];
+
 
     const tokens = await Promise.all(tokenContracts.map(async (contract) => {
       try {
