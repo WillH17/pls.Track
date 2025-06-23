@@ -47,7 +47,7 @@ app.get('/portfolio/:wallet', async (req, res) => {
 
     const tokens = await Promise.all(tokenContracts.map(async (contract) => {
       try {
-        const [infoResp, balanceResp] = await Promise.all([
+        const [infoResp, balanceResp, priceResp] = await Promise.all([
           axios.get(apiBase, {
             params: {
               module: 'token',
@@ -62,23 +62,45 @@ app.get('/portfolio/:wallet', async (req, res) => {
               contractaddress: contract,
               address: wallet
             }
-          })
+          }),
+          axios.get(`https://api.dexscreener.com/latest/dex/tokens/${contract}`)
         ]);
-
+    
+        // Validate tokeninfo
         const info = infoResp.data.result;
-        const balance = balanceResp.data.result;
-
+        if (!info || !info.name || !info.symbol || !info.decimals) {
+          console.warn(`Tokeninfo missing or invalid for ${contract}:`, info);
+          return null;
+        }
+    
+        // Balance parsing
+        const rawBalance = balanceResp.data.result;
+        const decimals = parseInt(info.decimals);
+        const normalizedBalance = parseFloat(rawBalance) / Math.pow(10, decimals);
+    
+        // Price parsing
+        let price = 0;
+        const pairs = priceResp.data.pairs;
+        if (Array.isArray(pairs) && pairs.length > 0 && pairs[0].priceUsd) {
+          price = parseFloat(pairs[0].priceUsd);
+        }
+    
+        const value = parseFloat((normalizedBalance * price).toFixed(4));
+    
         return {
           name: info.name,
           symbol: info.symbol,
-          decimals: parseInt(info.decimals),
-          balance: (parseFloat(balance) / Math.pow(10, parseInt(info.decimals))).toFixed(4),
-          contract: contract
+          address: contract,
+          balance: parseFloat(normalizedBalance.toFixed(4)),
+          price: price,
+          value: value
         };
       } catch (err) {
+        console.warn(`Failed to fetch data for ${contract}:`, err.message);
         return null;
       }
     }));
+
 
     res.json(tokens.filter(Boolean));
 
