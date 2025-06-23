@@ -14,6 +14,17 @@ app.use((req, res, next) => {
   next();
 });
 
+// Global logger for all requests
+app.use((req, res, next) => {
+  console.log(`🌐 ${req.method} ${req.url}`);
+  next();
+});
+
+// ✅ Health check route
+app.get('/ping', (req, res) => {
+  console.log("✅ /ping was hit");
+  res.send("pong");
+});
 
 // Helper to pad address for topics
 const padAddress = (addr) => '0x' + addr.toLowerCase().replace('0x', '').padStart(64, '0');
